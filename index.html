@@ -1,0 +1,228 @@
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BookOpen, Brain, Calculator, CheckCircle2, RotateCcw, Trophy } from "lucide-react";
+
+const topics = [
+  {
+    id: "prismas",
+    title: "Prismas",
+    color: "bg-blue-50",
+    idea: "Un prisma tiene dos bases iguales y paralelas. Sus caras laterales son paralelogramos.",
+    formulas: [
+      { name: "Área lateral", formula: "Aᴸ = perímetro de la base · altura", key: "AL = P · h" },
+      { name: "Área total", formula: "Aᵀ = Aᴸ + 2 · Aᵦ", key: "AT = AL + 2AB" },
+      { name: "Volumen", formula: "V = área de la base · altura", key: "V = AB · h" },
+      { name: "Ortoedro", formula: "Aᵀ = 2(ab + ac + bc)", key: "ortoedro" },
+      { name: "Cubo", formula: "Aᵀ = 6a²  |  V = a³", key: "cubo" },
+    ],
+    example: "Prisma pentagonal: calcula primero el área de una base, luego el área lateral con el perímetro, y al final suma las dos bases.",
+  },
+  {
+    id: "piramides",
+    title: "Pirámides",
+    color: "bg-amber-50",
+    idea: "Una pirámide tiene una base poligonal y caras laterales triangulares que se unen en un vértice.",
+    formulas: [
+      { name: "Área lateral", formula: "Aᴸ = (perímetro de la base · apotema de la pirámide) / 2", key: "AL = P · ap / 2" },
+      { name: "Área total", formula: "Aᵀ = Aᴸ + Aᵦ", key: "AT = AL + AB" },
+      { name: "Volumen", formula: "V = (Aᵦ · altura) / 3", key: "V = AB · h / 3" },
+      { name: "Apotema", formula: "Se suele hallar con Pitágoras", key: "apotema" },
+    ],
+    example: "En una pirámide regular, todas las caras laterales son triángulos iguales.",
+  },
+  {
+    id: "troncos",
+    title: "Troncos de pirámide",
+    color: "bg-emerald-50",
+    idea: "Un tronco de pirámide aparece al cortar una pirámide por un plano paralelo a la base.",
+    formulas: [
+      { name: "Área lateral", formula: "Aᴸ = ((P + P') / 2) · ap", key: "AL = (P + P') · ap / 2" },
+      { name: "Área total", formula: "Aᵀ = Aᴸ + Aᵦ mayor + Aᵦ menor", key: "AT = AL + ABM + ABm" },
+      { name: "Caras laterales", formula: "Son trapecios isósceles en un tronco regular", key: "trapecios" },
+    ],
+    example: "La apotema del tronco es la altura de cada trapecio lateral.",
+  },
+  {
+    id: "pitagoras",
+    title: "Pitágoras para geometría espacial",
+    color: "bg-purple-50",
+    idea: "Muchas alturas, diagonales y apotemas se calculan formando triángulos rectángulos.",
+    formulas: [
+      { name: "Teorema de Pitágoras", formula: "hipotenusa² = cateto² + cateto²", key: "c² = a² + b²" },
+      { name: "Diagonal de un ortoedro", formula: "d² = largo² + ancho² + alto²", key: "d² = a² + b² + c²" },
+    ],
+    example: "Si conoces dos medidas de un triángulo rectángulo, puedes encontrar la tercera con Pitágoras.",
+  },
+];
+
+const quiz = [
+  { q: "¿Qué fórmula calcula el área lateral de un prisma?", options: ["P · h", "Aᵦ · h / 3", "6a²"], answer: 0 },
+  { q: "¿Qué se suma al área lateral de una pirámide para obtener el área total?", options: ["Dos bases", "Una base", "Ninguna base"], answer: 1 },
+  { q: "En un tronco de pirámide regular, las caras laterales son...", options: ["Triángulos", "Trapecios", "Círculos"], answer: 1 },
+  { q: "¿Para qué sirve Pitágoras en estos temas?", options: ["Para hallar apotemas, alturas o diagonales", "Para contar vértices", "Para dibujar desarrollos planos"], answer: 0 },
+  { q: "Área total de un prisma:", options: ["Aᴸ + 2Aᵦ", "Aᴸ + Aᵦ", "P · ap / 2"], answer: 0 },
+  { q: "Volumen de una pirámide:", options: ["Aᵦ · h", "Aᵦ · h / 3", "P · h"], answer: 1 },
+];
+
+function PrismIcon() {
+  return <div className="h-24 w-24 rounded-xl bg-gradient-to-br from-blue-200 to-blue-400 shadow-inner rotate-3 flex items-center justify-center font-bold text-blue-900">PRISMA</div>;
+}
+function PyramidIcon() {
+  return <div className="h-24 w-24 bg-gradient-to-br from-amber-200 to-amber-500 shadow-inner rotate-45 rounded-md flex items-center justify-center"><span className="-rotate-45 font-bold text-amber-950">PIRÁMIDE</span></div>;
+}
+function FrustumIcon() {
+  return <div className="h-20 w-28 rounded-t-3xl rounded-b-lg bg-gradient-to-br from-emerald-200 to-emerald-500 shadow-inner flex items-center justify-center font-bold text-emerald-950">TRONCO</div>;
+}
+
+export default function App() {
+  const [tab, setTab] = useState("aprender");
+  const [active, setActive] = useState(topics[0]);
+  const [flipped, setFlipped] = useState(null);
+  const [quizIndex, setQuizIndex] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [score, setScore] = useState(0);
+  const [mode, setMode] = useState("prisma");
+  const [values, setValues] = useState({ P: 50, h: 8, AB: 125, ap: 12, P2: 30, AB2: 45 });
+
+  const result = useMemo(() => {
+    const P = Number(values.P) || 0, h = Number(values.h) || 0, AB = Number(values.AB) || 0;
+    const ap = Number(values.ap) || 0, P2 = Number(values.P2) || 0, AB2 = Number(values.AB2) || 0;
+    if (mode === "prisma") return { label: "Prisma", lateral: P * h, total: P * h + 2 * AB };
+    if (mode === "piramide") return { label: "Pirámide", lateral: (P * ap) / 2, total: (P * ap) / 2 + AB };
+    return { label: "Tronco", lateral: ((P + P2) / 2) * ap, total: ((P + P2) / 2) * ap + AB + AB2 };
+  }, [mode, values]);
+
+  const answer = (i) => {
+    if (selected !== null) return;
+    setSelected(i);
+    if (i === quiz[quizIndex].answer) setScore(score + 1);
+  };
+
+  const next = () => {
+    setSelected(null);
+    setQuizIndex((quizIndex + 1) % quiz.length);
+  };
+
+  const resetQuiz = () => { setQuizIndex(0); setSelected(null); setScore(0); };
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <motion.header initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="rounded-3xl bg-white shadow-sm p-6 md:p-8 border">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-slate-500">2º ESO · Geometría espacial</p>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tight">Prismas, pirámides y troncos</h1>
+              <p className="mt-3 text-slate-600 max-w-2xl">App de estudio para memorizar fórmulas, entender cuándo usarlas y practicar con ejercicios cortos.</p>
+            </div>
+            <div className="flex gap-3"><PrismIcon /><PyramidIcon /><FrustumIcon /></div>
+          </div>
+        </motion.header>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            ["aprender", BookOpen, "Aprender"],
+            ["tarjetas", Brain, "Tarjetas"],
+            ["calculadora", Calculator, "Calculadora"],
+            ["quiz", Trophy, "Quiz"],
+          ].map(([id, Icon, label]) => (
+            <Button key={id} onClick={() => setTab(id)} className={`rounded-2xl p-6 text-base ${tab === id ? "bg-slate-900" : "bg-white text-slate-900 border hover:bg-slate-100"}`}>
+              <Icon className="mr-2 h-5 w-5" /> {label}
+            </Button>
+          ))}
+        </div>
+
+        {tab === "aprender" && (
+          <div className="grid md:grid-cols-4 gap-4">
+            <div className="space-y-3">
+              {topics.map(t => <Button key={t.id} onClick={() => setActive(t)} className={`w-full justify-start rounded-2xl ${active.id === t.id ? "bg-slate-900" : "bg-white text-slate-900 border"}`}>{t.title}</Button>)}
+            </div>
+            <Card className={`md:col-span-3 rounded-3xl border-0 shadow-sm ${active.color}`}>
+              <CardContent className="p-6 md:p-8 space-y-5">
+                <h2 className="text-3xl font-black">{active.title}</h2>
+                <p className="text-lg text-slate-700">{active.idea}</p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {active.formulas.map(f => (
+                    <div key={f.name} className="rounded-2xl bg-white/80 p-4 border">
+                      <p className="font-bold text-slate-500">{f.name}</p>
+                      <p className="text-xl md:text-2xl font-black mt-2">{f.formula}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-2xl bg-white p-4 border"><strong>Idea clave:</strong> {active.example}</div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {tab === "tarjetas" && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {topics.flatMap(t => t.formulas.map((f, i) => ({ ...f, topic: t.title, id: `${t.id}-${i}` }))).map(card => (
+              <motion.button whileHover={{ scale: 1.02 }} key={card.id} onClick={() => setFlipped(flipped === card.id ? null : card.id)} className="text-left rounded-3xl bg-white border shadow-sm p-6 min-h-44">
+                <p className="text-sm font-bold text-slate-500">{card.topic}</p>
+                <h3 className="text-2xl font-black mt-2">{flipped === card.id ? card.formula : card.name}</h3>
+                <p className="mt-4 text-slate-500">Pulsa para {flipped === card.id ? "ver el nombre" : "ver la fórmula"}</p>
+              </motion.button>
+            ))}
+          </div>
+        )}
+
+        {tab === "calculadora" && (
+          <Card className="rounded-3xl shadow-sm border-0">
+            <CardContent className="p-6 md:p-8 space-y-6">
+              <h2 className="text-3xl font-black">Calculadora guiada de áreas</h2>
+              <div className="flex flex-wrap gap-3">
+                {[["prisma", "Prisma"], ["piramide", "Pirámide"], ["tronco", "Tronco de pirámide"]].map(([id, label]) => <Button key={id} onClick={() => setMode(id)} className={`rounded-2xl ${mode === id ? "bg-slate-900" : "bg-white text-slate-900 border"}`}>{label}</Button>)}
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                {[
+                  ["P", mode === "tronco" ? "Perímetro base mayor" : "Perímetro de la base"],
+                  ["h", "Altura del prisma"],
+                  ["AB", mode === "tronco" ? "Área base mayor" : "Área de la base"],
+                  ["ap", "Apotema"],
+                  ["P2", "Perímetro base menor"],
+                  ["AB2", "Área base menor"],
+                ].filter(([k]) => mode === "prisma" ? ["P", "h", "AB"].includes(k) : mode === "piramide" ? ["P", "AB", "ap"].includes(k) : true).map(([k, label]) => (
+                  <label key={k} className="rounded-2xl bg-slate-100 p-4 font-semibold">
+                    {label}
+                    <input className="mt-2 w-full rounded-xl p-3 border bg-white" type="number" value={values[k]} onChange={e => setValues({ ...values, [k]: e.target.value })} />
+                  </label>
+                ))}
+              </div>
+              <div className="rounded-3xl bg-slate-900 text-white p-6">
+                <p className="text-slate-300">Resultado para {result.label}</p>
+                <p className="text-3xl font-black mt-2">Área lateral = {result.lateral.toFixed(2)} u²</p>
+                <p className="text-3xl font-black mt-2">Área total = {result.total.toFixed(2)} u²</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {tab === "quiz" && (
+          <Card className="rounded-3xl shadow-sm border-0">
+            <CardContent className="p-6 md:p-8 space-y-6">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-3xl font-black">Quiz de fórmulas</h2>
+                <Button onClick={resetQuiz} className="rounded-2xl bg-white text-slate-900 border"><RotateCcw className="mr-2 h-4 w-4" /> Reiniciar</Button>
+              </div>
+              <p className="text-slate-600">Pregunta {quizIndex + 1} de {quiz.length} · Aciertos: {score}</p>
+              <div className="rounded-3xl bg-slate-100 p-6">
+                <h3 className="text-2xl font-black">{quiz[quizIndex].q}</h3>
+                <div className="grid md:grid-cols-3 gap-3 mt-5">
+                  {quiz[quizIndex].options.map((op, i) => {
+                    const ok = i === quiz[quizIndex].answer;
+                    const chosen = selected === i;
+                    return <Button key={op} onClick={() => answer(i)} className={`rounded-2xl p-6 text-lg ${selected === null ? "bg-white text-slate-900 border" : ok ? "bg-green-600" : chosen ? "bg-red-600" : "bg-white text-slate-500 border"}`}>{op}</Button>;
+                  })}
+                </div>
+                {selected !== null && <div className="mt-5 flex items-center justify-between"><p className="font-bold flex items-center"><CheckCircle2 className="mr-2 h-5 w-5" /> {selected === quiz[quizIndex].answer ? "¡Correcto!" : "Repasa la fórmula y vuelve a intentarlo."}</p><Button onClick={next} className="rounded-2xl bg-slate-900">Siguiente</Button></div>}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}
