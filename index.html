@@ -1,300 +1,235 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geometría 2º ESO: Prismas, Pirámides y Troncos</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prismas, cubos y esferas - 2º ESO</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      color: #0f172a;
-    }
-    header {
-      background: white;
-      padding: 35px 20px;
-      text-align: center;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    header h1 { margin: 0; font-size: 34px; }
-    header p { color: #475569; font-size: 18px; }
-    .container { max-width: 1100px; margin: auto; padding: 20px; }
-    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-    button {
-      border: 0;
-      border-radius: 15px;
-      padding: 14px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      background: white;
-      color: #0f172a;
-      box-shadow: 0 1px 4px #0001;
-    }
-    button.active, button:hover { background: #0f172a; color: white; }
-    .section { display: none; }
-    .section.active { display: block; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
-    .card {
-      background: white;
-      border-radius: 22px;
-      padding: 22px;
-      box-shadow: 0 2px 8px #0001;
-      border: 1px solid #e2e8f0;
-    }
-    .card h2, .card h3 { margin-top: 0; }
-    .formula {
-      background: #e0f2fe;
-      border-left: 6px solid #0284c7;
-      padding: 12px;
-      border-radius: 10px;
-      margin: 10px 0;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    .yellow { background: #fef3c7; border-left-color: #d97706; }
-    .green { background: #dcfce7; border-left-color: #16a34a; }
-    .purple { background: #ede9fe; border-left-color: #7c3aed; }
-    input, select {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0 14px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-    .result {
-      background: #0f172a;
-      color: white;
-      padding: 20px;
-      border-radius: 20px;
-      font-size: 22px;
-      margin-top: 15px;
-    }
-    .flashcard {
-      min-height: 150px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      transition: 0.2s;
-    }
-    .flashcard:hover { transform: scale(1.02); }
-    .quiz-option { margin: 8px 0; width: 100%; text-align: left; }
-    .correct { background: #16a34a !important; color: white; }
-    .wrong { background: #dc2626 !important; color: white; }
-    footer { text-align: center; padding: 30px; color: #64748b; }
-    @media (max-width: 700px) {
-      .tabs { grid-template-columns: 1fr 1fr; }
-      header h1 { font-size: 26px; }
-    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef2ff;color:#0f172a}
+    header{background:white;text-align:center;padding:32px 18px;border-bottom:1px solid #dbeafe}
+    h1{margin:0;font-size:34px}
+    header p{color:#475569;font-size:18px}
+    main{max-width:1100px;margin:auto;padding:20px}
+    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+    button{border:0;border-radius:14px;padding:14px;cursor:pointer;font-size:16px;font-weight:bold;background:white;color:#0f172a;box-shadow:0 1px 4px #0002}
+    button:hover,.activeBtn{background:#1e293b;color:white}
+    .section{display:none}.section.active{display:block}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+    .card{background:white;border-radius:22px;padding:22px;box-shadow:0 2px 8px #0001;border:1px solid #dbeafe}
+    .formula{background:#e0f2fe;border-left:6px solid #0284c7;padding:12px;border-radius:10px;margin:10px 0;font-size:20px;font-weight:bold}
+    .cube{background:#dcfce7;border-left-color:#16a34a}
+    .sphere{background:#fef3c7;border-left-color:#d97706}
+    .help{background:#f8fafc;border-left:6px solid #64748b;padding:12px;border-radius:10px;margin-top:10px}
+    input,select{width:100%;padding:12px;margin:8px 0 14px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px}
+    .result{background:#1e293b;color:white;padding:20px;border-radius:20px;font-size:22px;margin-top:15px}
+    .flashcard{min-height:155px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+    .quiz-option{width:100%;text-align:left;margin:8px 0}
+    .correct{background:#16a34a!important;color:white}
+    .wrong{background:#dc2626!important;color:white}
+    .exercise{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid #e2e8f0}
+    footer{text-align:center;padding:30px;color:#64748b}
+    @media(max-width:700px){.tabs{grid-template-columns:1fr 1fr}h1{font-size:26px}}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Geometría 2º ESO</h1>
-    <p>Prismas, pirámides, troncos de pirámide y fórmulas de áreas</p>
-  </header>
+<header>
+  <h1>Prismas, cubos y esferas</h1>
+  <p>App de fórmulas y ejercicios sencillos para 2º ESO</p>
+</header>
 
-  <main class="container">
-    <div class="tabs">
-      <button class="active" onclick="showTab('teoria', this)">Teoría</button>
-      <button onclick="showTab('tarjetas', this)">Tarjetas</button>
-      <button onclick="showTab('calculadora', this)">Calculadora</button>
-      <button onclick="showTab('quiz', this)">Quiz</button>
+<main>
+  <div class="tabs">
+    <button class="activeBtn" onclick="showTab('teoria',this)">Teoría</button>
+    <button onclick="showTab('tarjetas',this)">Tarjetas</button>
+    <button onclick="showTab('calculadora',this)">Calculadora</button>
+    <button onclick="showTab('ejercicios',this)">Ejercicios</button>
+  </div>
+
+  <section id="teoria" class="section active">
+    <div class="grid">
+      <div class="card">
+        <h2>Prismas</h2>
+        <p>Un prisma tiene dos bases iguales y paralelas. Sus caras laterales son rectángulos o paralelogramos.</p>
+        <div class="formula">Área lateral = P · h</div>
+        <div class="formula">Área total = Área lateral + 2 · Área base</div>
+        <div class="formula">Volumen = Área base · h</div>
+        <div class="help">P = perímetro de la base · h = altura del prisma.</div>
+      </div>
+
+      <div class="card">
+        <h2>Cubos</h2>
+        <p>Un cubo es un prisma especial: todas sus caras son cuadrados iguales.</p>
+        <div class="formula cube">Área de una cara = a²</div>
+        <div class="formula cube">Área total = 6a²</div>
+        <div class="formula cube">Volumen = a³</div>
+        <div class="help">a = arista o lado del cubo.</div>
+      </div>
+
+      <div class="card">
+        <h2>Esferas</h2>
+        <p>Una esfera es un cuerpo redondo. No tiene caras planas, aristas ni vértices.</p>
+        <div class="formula sphere">Área = 4πr²</div>
+        <div class="formula sphere">Volumen = (4/3)πr³</div>
+        <div class="help">r = radio. Puedes usar π ≈ 3,14.</div>
+      </div>
     </div>
+  </section>
 
-    <section id="teoria" class="section active">
-      <div class="grid">
-        <div class="card">
-          <h2>Prismas</h2>
-          <p>Tienen dos bases iguales y paralelas. Las caras laterales son paralelogramos.</p>
-          <div class="formula">Área lateral = P · h</div>
-          <div class="formula">Área total = Área lateral + 2 · Área base</div>
-          <div class="formula">Volumen = Área base · h</div>
-        </div>
-        <div class="card">
-          <h2>Pirámides</h2>
-          <p>Tienen una base poligonal y caras laterales triangulares que se unen en un vértice.</p>
-          <div class="formula yellow">Área lateral = P · ap / 2</div>
-          <div class="formula yellow">Área total = Área lateral + Área base</div>
-          <div class="formula yellow">Volumen = Área base · h / 3</div>
-        </div>
-        <div class="card">
-          <h2>Troncos de pirámide</h2>
-          <p>Se obtienen al cortar una pirámide por un plano paralelo a la base.</p>
-          <div class="formula green">Área lateral = ((P + P') / 2) · ap</div>
-          <div class="formula green">Área total = Área lateral + Área base mayor + Área base menor</div>
-        </div>
-        <div class="card">
-          <h2>Pitágoras</h2>
-          <p>Sirve para calcular apotemas, alturas y diagonales cuando aparece un triángulo rectángulo.</p>
-          <div class="formula purple">c² = a² + b²</div>
-          <div class="formula purple">Diagonal ortoedro: d² = a² + b² + c²</div>
-        </div>
-      </div>
-    </section>
+  <section id="tarjetas" class="section">
+    <div class="grid" id="flashcards"></div>
+  </section>
 
-    <section id="tarjetas" class="section">
-      <div class="grid" id="flashcards"></div>
-    </section>
+  <section id="calculadora" class="section">
+    <div class="card">
+      <h2>Calculadora de fórmulas</h2>
+      <label>Figura</label>
+      <select id="tipo" onchange="actualizarCampos()">
+        <option value="prisma">Prisma</option>
+        <option value="cubo">Cubo</option>
+        <option value="esfera">Esfera</option>
+      </select>
+      <div id="campos"></div>
+      <button onclick="calcular()">Calcular</button>
+      <div class="result" id="resultado">Introduce datos y pulsa calcular.</div>
+    </div>
+  </section>
 
-    <section id="calculadora" class="section">
-      <div class="card">
-        <h2>Calculadora de áreas</h2>
-        <label>Figura</label>
-        <select id="tipo" onchange="actualizarCampos()">
-          <option value="prisma">Prisma</option>
-          <option value="piramide">Pirámide</option>
-          <option value="tronco">Tronco de pirámide</option>
-        </select>
+  <section id="ejercicios" class="section">
+    <div class="card">
+      <h2>Ejercicios sencillos</h2>
+      <p>Escribe el resultado y pulsa comprobar. Redondea a 2 decimales si hace falta.</p>
+      <div id="listaEjercicios"></div>
+    </div>
+  </section>
+</main>
 
-        <div id="campos"></div>
-        <button onclick="calcular()">Calcular</button>
-        <div class="result" id="resultado">Introduce datos y pulsa calcular.</div>
-      </div>
-    </section>
+<footer>Guarda este archivo como .html y ábrelo en Google Chrome.</footer>
 
-    <section id="quiz" class="section">
-      <div class="card">
-        <h2>Quiz de fórmulas</h2>
-        <p id="pregunta"></p>
-        <div id="opciones"></div>
-        <p><strong>Puntuación:</strong> <span id="score">0</span></p>
-        <button onclick="siguientePregunta()">Siguiente</button>
-      </div>
-    </section>
-  </main>
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('activeBtn'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('activeBtn');
+}
 
-  <footer>App creada para estudiar geometría espacial de 2º ESO.</footer>
+const formulas=[
+  ['Prisma','Área lateral','P · h'],
+  ['Prisma','Área total','AL + 2 · AB'],
+  ['Prisma','Volumen','AB · h'],
+  ['Cubo','Área total','6a²'],
+  ['Cubo','Volumen','a³'],
+  ['Esfera','Área','4πr²'],
+  ['Esfera','Volumen','(4/3)πr³']
+];
 
-  <script>
-    function showTab(id, btn) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      btn.classList.add('active');
-    }
+const flashcards=document.getElementById('flashcards');
+formulas.forEach(f=>{
+  const div=document.createElement('div');
+  div.className='card flashcard';
+  let girada=false;
+  div.innerHTML='<small>'+f[0]+'</small><h3>'+f[1]+'</h3><p>Pulsa para ver fórmula</p>';
+  div.onclick=function(){
+    girada=!girada;
+    div.innerHTML=girada
+      ? '<small>'+f[0]+'</small><h3>'+f[2]+'</h3><p>Pulsa para volver</p>'
+      : '<small>'+f[0]+'</small><h3>'+f[1]+'</h3><p>Pulsa para ver fórmula</p>';
+  };
+  flashcards.appendChild(div);
+});
 
-    const formulas = [
-      ['Prisma', 'Área lateral', 'P · h'],
-      ['Prisma', 'Área total', 'Área lateral + 2 · Área base'],
-      ['Prisma', 'Volumen', 'Área base · h'],
-      ['Pirámide', 'Área lateral', 'P · ap / 2'],
-      ['Pirámide', 'Área total', 'Área lateral + Área base'],
-      ['Pirámide', 'Volumen', 'Área base · h / 3'],
-      ['Tronco de pirámide', 'Área lateral', '((P + P\') / 2) · ap'],
-      ['Tronco de pirámide', 'Área total', 'Área lateral + Área base mayor + Área base menor'],
-      ['Pitágoras', 'Teorema', 'c² = a² + b²']
-    ];
+function actualizarCampos(){
+  const tipo=document.getElementById('tipo').value;
+  const c=document.getElementById('campos');
+  if(tipo==='prisma'){
+    c.innerHTML='<label>Perímetro de la base</label><input id="P" type="number" value="20"><label>Altura del prisma</label><input id="h" type="number" value="6"><label>Área de la base</label><input id="AB" type="number" value="24">';
+  }else if(tipo==='cubo'){
+    c.innerHTML='<label>Arista del cubo</label><input id="a" type="number" value="5">';
+  }else{
+    c.innerHTML='<label>Radio de la esfera</label><input id="r" type="number" value="3">';
+  }
+}
 
-    const flashcards = document.getElementById('flashcards');
-    formulas.forEach((f, index) => {
-      const div = document.createElement('div');
-      div.className = 'card flashcard';
-      div.innerHTML = `<small>${f[0]}</small><h3>${f[1]}</h3><p>Pulsa para ver fórmula</p>`;
-      let flipped = false;
-      div.onclick = () => {
-        flipped = !flipped;
-        div.innerHTML = flipped
-          ? `<small>${f[0]}</small><h3>${f[2]}</h3><p>Pulsa para volver</p>`
-          : `<small>${f[0]}</small><h3>${f[1]}</h3><p>Pulsa para ver fórmula</p>`;
-      };
-      flashcards.appendChild(div);
-    });
+function num(id){return Number(document.getElementById(id).value)||0}
 
-    function actualizarCampos() {
-      const tipo = document.getElementById('tipo').value;
-      const campos = document.getElementById('campos');
-      if (tipo === 'prisma') {
-        campos.innerHTML = `
-          <label>Perímetro de la base</label><input id="P" type="number" value="50">
-          <label>Altura</label><input id="h" type="number" value="8">
-          <label>Área de la base</label><input id="AB" type="number" value="125">
-        `;
-      } else if (tipo === 'piramide') {
-        campos.innerHTML = `
-          <label>Perímetro de la base</label><input id="P" type="number" value="40">
-          <label>Apotema de la pirámide</label><input id="ap" type="number" value="13">
-          <label>Área de la base</label><input id="AB" type="number" value="100">
-        `;
-      } else {
-        campos.innerHTML = `
-          <label>Perímetro base mayor</label><input id="P" type="number" value="38">
-          <label>Perímetro base menor</label><input id="P2" type="number" value="20">
-          <label>Apotema del tronco</label><input id="ap" type="number" value="41">
-          <label>Área base mayor</label><input id="AB" type="number" value="900">
-          <label>Área base menor</label><input id="AB2" type="number" value="250">
-        `;
-      }
-    }
+function calcular(){
+  const tipo=document.getElementById('tipo').value;
+  let texto='';
+  if(tipo==='prisma'){
+    const AL=num('P')*num('h');
+    const AT=AL+2*num('AB');
+    const V=num('AB')*num('h');
+    texto='Área lateral = '+AL.toFixed(2)+' u²<br>Área total = '+AT.toFixed(2)+' u²<br>Volumen = '+V.toFixed(2)+' u³';
+  }else if(tipo==='cubo'){
+    const a=num('a');
+    texto='Área total = '+(6*a*a).toFixed(2)+' u²<br>Volumen = '+(a*a*a).toFixed(2)+' u³';
+  }else{
+    const r=num('r');
+    texto='Área = '+(4*Math.PI*r*r).toFixed(2)+' u²<br>Volumen = '+((4/3)*Math.PI*r*r*r).toFixed(2)+' u³';
+  }
+  document.getElementById('resultado').innerHTML=texto;
+}
+actualizarCampos();
 
-    function num(id) { return Number(document.getElementById(id).value) || 0; }
+const ejercicios=[
+  {
+    texto:'1) Un prisma tiene perímetro de la base 18 cm, altura 5 cm y área de la base 12 cm². Calcula el área lateral.',
+    solucion:90,
+    pista:'Área lateral = P · h = 18 · 5'
+  },
+  {
+    texto:'2) Con los mismos datos del ejercicio 1, calcula el área total.',
+    solucion:114,
+    pista:'Área total = AL + 2 · AB = 90 + 2 · 12'
+  },
+  {
+    texto:'3) Un prisma tiene área de la base 20 cm² y altura 7 cm. Calcula el volumen.',
+    solucion:140,
+    pista:'Volumen = AB · h = 20 · 7'
+  },
+  {
+    texto:'4) Un cubo tiene arista 4 cm. Calcula su área total.',
+    solucion:96,
+    pista:'Área total = 6a² = 6 · 4²'
+  },
+  {
+    texto:'5) Un cubo tiene arista 3 cm. Calcula su volumen.',
+    solucion:27,
+    pista:'Volumen = a³ = 3³'
+  },
+  {
+    texto:'6) Una esfera tiene radio 2 cm. Calcula su área. Usa π = 3,14.',
+    solucion:50.24,
+    pista:'Área = 4πr² = 4 · 3,14 · 2²'
+  },
+  {
+    texto:'7) Una esfera tiene radio 3 cm. Calcula su volumen. Usa π = 3,14.',
+    solucion:113.04,
+    pista:'Volumen = (4/3)πr³ = (4/3) · 3,14 · 3³'
+  }
+];
 
-    function calcular() {
-      const tipo = document.getElementById('tipo').value;
-      let lateral = 0;
-      let total = 0;
-      if (tipo === 'prisma') {
-        lateral = num('P') * num('h');
-        total = lateral + 2 * num('AB');
-      } else if (tipo === 'piramide') {
-        lateral = num('P') * num('ap') / 2;
-        total = lateral + num('AB');
-      } else {
-        lateral = ((num('P') + num('P2')) / 2) * num('ap');
-        total = lateral + num('AB') + num('AB2');
-      }
-      document.getElementById('resultado').innerHTML =
-        `Área lateral = ${lateral.toFixed(2)} u²<br>Área total = ${total.toFixed(2)} u²`;
-    }
+const lista=document.getElementById('listaEjercicios');
+ejercicios.forEach((e,i)=>{
+  const div=document.createElement('div');
+  div.className='exercise';
+  div.innerHTML='<p><strong>'+e.texto+'</strong></p><input id="ej'+i+'" type="number" step="0.01" placeholder="Tu respuesta"><button onclick="comprobar('+i+')">Comprobar</button><p id="res'+i+'"></p>';
+  lista.appendChild(div);
+});
 
-    actualizarCampos();
-
-    const preguntas = [
-      { q: '¿Área lateral de un prisma?', o: ['P · h', 'P · ap / 2', 'Área base · h / 3'], a: 0 },
-      { q: '¿Área total de una pirámide?', o: ['AL + 2AB', 'AL + AB', 'P · h'], a: 1 },
-      { q: '¿Área lateral de un tronco de pirámide?', o: ['((P + P\') / 2) · ap', 'P · h', '6a²'], a: 0 },
-      { q: '¿Para qué usamos Pitágoras?', o: ['Para hallar apotemas, alturas o diagonales', 'Para sumar bases', 'Para calcular porcentajes'], a: 0 },
-      { q: '¿Volumen de una pirámide?', o: ['AB · h', 'AB · h / 3', 'P · ap / 2'], a: 1 }
-    ];
-    let actual = 0;
-    let puntos = 0;
-
-    function cargarPregunta() {
-      const p = preguntas[actual];
-      document.getElementById('pregunta').textContent = p.q;
-      const opciones = document.getElementById('opciones');
-      opciones.innerHTML = '';
-      p.o.forEach((op, i) => {
-        const b = document.createElement('button');
-        b.className = 'quiz-option';
-        b.textContent = op;
-        b.onclick = () => responder(b, i);
-        opciones.appendChild(b);
-      });
-    }
-
-    function responder(boton, i) {
-      const correcta = preguntas[actual].a;
-      document.querySelectorAll('.quiz-option').forEach((b, idx) => {
-        b.disabled = true;
-        if (idx === correcta) b.classList.add('correct');
-      });
-      if (i === correcta) {
-        puntos++;
-        document.getElementById('score').textContent = puntos;
-      } else {
-        boton.classList.add('wrong');
-      }
-    }
-
-    function siguientePregunta() {
-      actual = (actual + 1) % preguntas.length;
-      cargarPregunta();
-    }
-
-    cargarPregunta();
-  </scri
+function comprobar(i){
+  const valor=Number(document.getElementById('ej'+i).value);
+  const correcto=ejercicios[i].solucion;
+  const salida=document.getElementById('res'+i);
+  if(Math.abs(valor-correcto)<0.05){
+    salida.innerHTML='✅ Correcto.';
+    salida.style.color='#16a34a';
+  }else{
+    salida.innerHTML='❌ Revisa. Pista: '+ejercicios[i].pista+'. Solución: '+correcto;
+    salida.style.color='#dc2626';
+  }
+}
+</script>
+</body>
+</html>
